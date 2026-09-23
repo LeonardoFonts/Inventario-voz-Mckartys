@@ -2,62 +2,102 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>McCarthy's San Andrés - Inventario por Voz</title>
+    <!-- Chart.js para Métricas y Gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-dark: #0f1715;
-            --card-bg: #1b2825;
+            --bg-dark: #0b1210;
+            --card-bg: #162421;
             --accent-green: #10b981;
             --accent-gold: #d4af37;
             --text-light: #f3f4f6;
             --text-muted: #9ca3af;
             --danger: #ef4444;
+            --border-color: #263834;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-light);
-            padding: 15px;
+            padding: 12px;
             max-width: 900px;
             margin: 0 auto;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
         }
 
         header {
             text-align: center;
-            padding: 15px 0;
+            padding: 12px 0;
             border-bottom: 2px solid var(--accent-gold);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         header h1 {
             color: var(--accent-gold);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 5px;
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        /* Navigation Tabs */
+        .tab-nav {
+            display: flex;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 5px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-green);
+            color: #000;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         /* Progress Bar */
         .progress-container {
-            background-color: #263834;
+            background-color: var(--border-color);
             border-radius: 10px;
-            height: 12px;
+            height: 10px;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             overflow: hidden;
         }
 
@@ -73,37 +113,37 @@
             background-color: var(--card-bg);
             border: 2px solid var(--accent-green);
             border-radius: 16px;
-            padding: 25px 20px;
+            padding: 20px 15px;
             text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            margin-bottom: 25px;
-            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            margin-bottom: 15px;
         }
 
         .category-badge {
             background-color: var(--accent-gold);
             color: #000;
             font-weight: bold;
-            font-size: 0.8rem;
-            padding: 4px 12px;
+            font-size: 0.75rem;
+            padding: 4px 10px;
             border-radius: 20px;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-transform: uppercase;
         }
 
         .item-name {
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 1.8rem;
+            font-weight: 800;
             color: #fff;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            line-height: 1.2;
         }
 
         .item-unit {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--accent-green);
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
         }
 
         .input-group {
@@ -111,27 +151,27 @@
             justify-content: center;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .input-group input {
-            background-color: #0f1715;
+            background-color: var(--bg-dark);
             border: 2px solid var(--accent-green);
             color: #fff;
-            font-size: 2rem;
+            font-size: 2.2rem;
             text-align: center;
-            width: 140px;
-            padding: 8px;
-            border-radius: 10px;
+            width: 130px;
+            padding: 6px;
+            border-radius: 12px;
             font-weight: bold;
         }
 
-        /* Voice Controls */
+        /* Voice Status */
         .voice-status {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--text-muted);
-            margin-bottom: 15px;
-            min-height: 24px;
+            margin-bottom: 12px;
+            min-height: 22px;
         }
 
         .voice-status.listening {
@@ -141,36 +181,37 @@
         }
 
         @keyframes pulse {
-            0% { opacity: 0.6; }
+            0% { opacity: 0.5; }
             50% { opacity: 1; }
-            100% { opacity: 0.6; }
+            100% { opacity: 0.5; }
         }
 
+        /* Grid Controls */
         .btn-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
         .btn {
-            background-color: #2a3d38;
+            background-color: #243531;
             color: var(--text-light);
             border: none;
             padding: 12px;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn:active {
-            transform: scale(0.97);
+            transform: scale(0.96);
         }
 
         .btn-primary {
@@ -178,7 +219,7 @@
             color: #000;
             grid-column: span 2;
             font-size: 1.1rem;
-            padding: 15px;
+            padding: 14px;
         }
 
         .btn-primary.recording {
@@ -191,73 +232,142 @@
             color: #000;
         }
 
-        /* Commands Help */
-        .voice-commands-info {
-            background-color: #15221f;
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-align: left;
-            margin-top: 10px;
+        /* Settings Panel */
+        .settings-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
         }
 
-        .voice-commands-info strong {
+        .settings-card h4 {
             color: var(--accent-gold);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .setting-row select, .setting-row input[type="range"] {
+            background-color: var(--bg-dark);
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 6px;
+            border-radius: 6px;
+            max-width: 60%;
         }
 
         /* Table Section */
         .table-section {
             background-color: var(--card-bg);
             border-radius: 12px;
-            padding: 15px;
+            padding: 12px;
             overflow-x: auto;
+            border: 1px solid var(--border-color);
         }
 
         .table-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         th {
-            background-color: #121d1b;
+            background-color: var(--bg-dark);
             color: var(--accent-gold);
-            padding: 10px;
+            padding: 8px;
             border-bottom: 2px solid var(--accent-green);
         }
 
         td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #263834;
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         tr.active-row {
-            background-color: rgba(16, 185, 129, 0.2);
+            background-color: rgba(16, 185, 129, 0.25);
         }
 
         td input {
-            background-color: #0f1715;
-            border: 1px solid #263834;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
             color: #fff;
-            width: 70px;
+            width: 65px;
             padding: 4px;
             text-align: center;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-weight: bold;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            .item-name { font-size: 1.6rem; }
-            .btn-grid { grid-template-columns: 1fr 1fr; }
+        /* Metrics Dashboard */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .metric-card h3 {
+            font-size: 1.6rem;
+            color: var(--accent-green);
+        }
+
+        .metric-card p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .voice-commands-info {
+            background-color: #111a18;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            border: 1px solid #1e2e2a;
+        }
+
+        .voice-commands-info strong {
+            color: var(--accent-gold);
         }
     </style>
 </head>
@@ -265,223 +375,278 @@
 
     <header>
         <h1>McCarthy's Irish Pub</h1>
-        <p>Control de Inventario por Voz | San Andrés</p>
+        <p>Inventario Manos Libres por Voz</p>
     </header>
 
-    <!-- Progress Indicator -->
-    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">
-        <span>Progreso de captura</span>
-        <span id="progress-text">0 / 0 insumos</span>
-    </div>
-    <div class="progress-container">
-        <div class="progress-bar" id="progress-bar"></div>
+    <!-- Navigation Tabs -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('tab-captura', this)">🎙️ Captura</button>
+        <button class="tab-btn" onclick="switchTab('tab-tabla', this)">📋 Tabla</button>
+        <button class="tab-btn" onclick="switchTab('tab-metricas', this)">📊 Métricas</button>
     </div>
 
-    <!-- Active Item Focus Card -->
-    <div class="active-card">
-        <div class="category-badge" id="card-category">CÁRNICOS</div>
-        <div class="item-name" id="card-title">Cargando...</div>
-        <div class="item-unit" id="card-unit">PRESENTACIÓN: KG</div>
-
-        <div class="input-group">
-            <input type="number" step="any" id="card-input" placeholder="0" autofocus>
-            <button class="btn btn-gold" id="btn-save-step">✓ Guardar</button>
+    <!-- TAB 1: CAPTURA POR VOZ -->
+    <div id="tab-captura" class="tab-content active">
+        
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">
+            <span>Progreso de captura</span>
+            <span id="progress-text">0 / 0 insumos (0%)</span>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
         </div>
 
-        <div class="voice-status" id="voice-status">Presiona el botón para iniciar el dictado por voz.</div>
+        <!-- Active Focus Card -->
+        <div class="active-card">
+            <div class="category-badge" id="card-category">CÁRNICOS</div>
+            <div class="item-name" id="card-title">Cargando...</div>
+            <div class="item-unit" id="card-unit">PRESENTACIÓN: KG</div>
 
-        <div class="btn-grid">
-            <button class="btn btn-primary" id="btn-toggle-voice">
-                🎙️ Activar Dictado por Voz
-            </button>
-            <button class="btn" id="btn-prev">⬅️ Atrás</button>
-            <button class="btn" id="btn-skip">⏭️ Pasa / Salta</button>
-            <button class="btn" id="btn-repeat">🔊 Repetir Nombre</button>
-            <button class="btn" id="btn-tts-toggle">🔊 Voz Asistente: ON</button>
-        </div>
+            <div class="input-group">
+                <input type="number" step="any" id="card-input" placeholder="0" autofocus>
+                <button class="btn btn-gold" id="btn-save-step">✓ Guardar</button>
+            </div>
 
-        <div class="voice-commands-info">
-            💡 <strong>Comandos por voz:</strong><br>
-            • Di un número (ej: <i>"Cinco"</i>, <i>"Dos punto cinco"</i>) para guardar y avanzar.<br>
-            • Di <i>"Pasa"</i> o <i>"Siguiente"</i> para omitir.<br>
-            • Di <i>"Atrás"</i> o <i>"Corregir"</i> para regresar al anterior.
-        </div>
-    </div>
+            <div class="voice-status" id="voice-status">Presiona para iniciar el dictado por voz.</div>
 
-    <!-- Inventory Table View -->
-    <div class="table-section">
-        <div class="table-header">
-            <h3 style="color: var(--accent-gold);">Vista General de Insumos</h3>
-            <div style="display: flex; gap: 8px;">
-                <button class="btn btn-gold" id="btn-copy-sheets" style="padding: 6px 12px; font-size: 0.8rem;">📋 Copiar para Sheets</button>
-                <button class="btn" id="btn-export-csv" style="padding: 6px 12px; font-size: 0.8rem;">📥 Exportar CSV</button>
-                <button class="btn" id="btn-clear-all" style="padding: 6px 12px; font-size: 0.8rem; background: var(--danger);">🗑️ Limpiar</button>
+            <div class="btn-grid">
+                <button class="btn btn-primary" id="btn-toggle-voice">
+                    🎙️ Activar Dictado por Voz
+                </button>
+                <button class="btn" id="btn-prev">⬅️ Atrás</button>
+                <button class="btn" id="btn-skip">⏭️ Pasa / Salta</button>
+                <button class="btn" id="btn-repeat">🔊 Repetir</button>
+                <button class="btn" id="btn-tts-toggle">🔊 Asistente: ON</button>
+            </div>
+
+            <div class="voice-commands-info">
+                💡 <strong>Comandos por voz:</strong><br>
+                • Di números (ej: <i>"Cinco"</i>, <i>"Dos punto cinco"</i>) para guardar y avanzar.<br>
+                • Di <i>"Pasa"</i>, <i>"Siguiente"</i> o <i>"Después"</i> para omitir.<br>
+                • Di <i>"Atrás"</i> o <i>"Corregir"</i> para regresar al anterior.
             </div>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Categoría</th>
-                    <th>Insumo</th>
-                    <th>Pres.</th>
-                    <th>Conteos</th>
-                </tr>
-            </thead>
-            <tbody id="inventory-tbody">
-                <!-- Rows injected dynamically -->
-            </tbody>
-        </table>
+        <!-- Ajustes de Voz -->
+        <div class="settings-card">
+            <h4>⚙️ Configuración de Voz del Asistente</h4>
+            <div class="setting-row">
+                <label for="voice-select">Voz de Lectura:</label>
+                <select id="voice-select"></select>
+            </div>
+            <div class="setting-row">
+                <label for="rate-range">Velocidad:</label>
+                <input type="range" id="rate-range" min="0.7" max="1.5" step="0.1" value="1.0">
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: TABLA GENERAL -->
+    <div id="tab-tabla" class="tab-content">
+        <div class="table-section">
+            <div class="table-header">
+                <h3 style="color: var(--accent-gold); font-size: 1rem;">Lista de Inventario</h3>
+
+                <div class="table-actions">
+                    <button class="btn btn-gold" id="btn-copy-sheets" style="padding: 8px 10px; font-size: 0.75rem;">
+                        📋 Copiar para Sheets
+                    </button>
+                    <button class="btn" id="btn-export-csv" style="padding: 8px 10px; font-size: 0.75rem;">
+                        📥 Exportar CSV
+                    </button>
+                    <button class="btn" id="btn-clear-all" style="padding: 8px 10px; font-size: 0.75rem; background: var(--danger);">
+                        🗑️ Limpiar
+                    </button>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Categoría</th>
+                        <th>Insumo</th>
+                        <th>Pres.</th>
+                        <th>Conteo</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-tbody">
+                    <!-- Filas generadas dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 3: MÉTRICAS Y GRÁFICAS -->
+    <div id="tab-metricas" class="tab-content">
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3 id="metric-total">0</h3>
+                <p>Total Insumos</p>
+            </div>
+            <div class="metric-card">
+                <h3 id="metric-captured" style="color: var(--accent-green);">0</h3>
+                <p>Capturados</p>
+            </div>
+            <div class="metric-card">
+                <h3 id="metric-pending" style="color: var(--accent-gold);">0</h3>
+                <p>Pendientes</p>
+            </div>
+            <div class="metric-card">
+                <h3 id="metric-pct">0%</h3>
+                <p>% Completado</p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h4 style="color: var(--accent-gold); font-size: 0.9rem; margin-bottom: 10px;">Avance General</h4>
+            <canvas id="chartProgress" style="max-height: 220px;"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h4 style="color: var(--accent-gold); font-size: 0.9rem; margin-bottom: 10px;">Captura por Categorías</h4>
+            <canvas id="chartCategories" style="max-height: 280px;"></canvas>
+        </div>
     </div>
 
     <script>
-        // McCarthy's Master Inventory Dataset
-        const rawInventory = [
-            // CÁRNICOS
-            { cat: "CÁRNICOS", name: "Alita marinada", unit: "KG" },
-            { cat: "CÁRNICOS", name: "Pechuga s/hueso", unit: "KG" },
-            { cat: "CÁRNICOS", name: "Molida Mixta", unit: "KG" },
-            { cat: "CÁRNICOS", name: "Tocino", unit: "PAQ" },
-            { cat: "CÁRNICOS", name: "Jamon", unit: "KG" },
-            { cat: "CÁRNICOS", name: "Salchicha Jumbo", unit: "PAQ" },
-            { cat: "CÁRNICOS", name: "Peperoni", unit: "KG" },
-            // FRUTAS Y VERDURAS
-            { cat: "FRUTAS Y VERDURAS", name: "Jitomate bola", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Jitomate huaje", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Perejil", unit: "Manojo" },
-            { cat: "FRUTAS Y VERDURAS", name: "Cebolla blanca", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Cebolla morada", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Chile habanero", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Zanahoria", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Pepino", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Jicama", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Lechuga italiana", unit: "PZA" },
-            { cat: "FRUTAS Y VERDURAS", name: "Lechuga Romana", unit: "PZA" },
-            { cat: "FRUTAS Y VERDURAS", name: "Ajo", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Chile guajillo", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Chile pasilla", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Chile cascabel", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Ajo en Polvo", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Cebolla en Polvo", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Col Verde", unit: "Pza" },
-            { cat: "FRUTAS Y VERDURAS", name: "Col Morada", unit: "Pza" },
-            { cat: "FRUTAS Y VERDURAS", name: "Chiltepin", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Chile de árbol", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Aguacate", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Frijol negro", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Cacahuate", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Chile Jalapeño", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Laurel", unit: "KG" },
-            { cat: "FRUTAS Y VERDURAS", name: "Cilantro", unit: "KG" },
-            // PAN
-            { cat: "PAN", name: "Pan Brioche", unit: "PAQ" },
-            { cat: "PAN", name: "Pan Minix", unit: "PAQ" },
-            { cat: "PAN", name: "Pan Slaider", unit: "PAQ" },
-            { cat: "PAN", name: "Pan Hot Dog", unit: "PAQ" },
-            { cat: "PAN", name: "Base Pizza", unit: "PZA" },
-            // ABARROTES
-            { cat: "ABARROTES", name: "Paprika español", unit: "KG" },
-            { cat: "ABARROTES", name: "Salsa Cotadina", unit: "BOTE" },
-            { cat: "ABARROTES", name: "Pan molido", unit: "KG" },
-            { cat: "ABARROTES", name: "Salsa de tomate", unit: "BOTE" },
-            { cat: "ABARROTES", name: "Pimienta negra", unit: "BOTE" },
-            { cat: "ABARROTES", name: "Huevo blanco", unit: "KG" },
-            { cat: "ABARROTES", name: "Piña en almibar", unit: "LATA" },
-            { cat: "ABARROTES", name: "Lemon pepper", unit: "BOTE" },
-            { cat: "ABARROTES", name: "Concentrado de Tamarindo", unit: "LT" },
-            { cat: "ABARROTES", name: "Elote en Lata", unit: "BOTE" },
-            { cat: "ABARROTES", name: "Maicena", unit: "KG" },
-            { cat: "ABARROTES", name: "Azucar estandar", unit: "KG" },
-            { cat: "ABARROTES", name: "Mostaza", unit: "BOTE 3.8Lt" },
-            { cat: "ABARROTES", name: "Condimix (consomé)", unit: "BOTE 3.6Kg" },
-            { cat: "ABARROTES", name: "Pepinillos", unit: "BOTE" },
-            { cat: "ABARROTES", name: "Valentina Amarilla Grande", unit: "LT" },
-            { cat: "ABARROTES", name: "Salsa BBQ", unit: "LT" },
-            { cat: "ABARROTES", name: "Salsa Inglesa", unit: "LT" },
-            { cat: "ABARROTES", name: "Jugo Maggi", unit: "LT" },
-            { cat: "ABARROTES", name: "Tajin", unit: "BOTE 900 G" },
-            { cat: "ABARROTES", name: "Aceite Vegetal", unit: "LT" },
-            { cat: "ABARROTES", name: "Aceite para freir", unit: "BIDON 20Lt" },
-            { cat: "ABARROTES", name: "Aceite de olivo", unit: "LT" },
-            { cat: "ABARROTES", name: "Sal con ajo", unit: "KG" },
-            { cat: "ABARROTES", name: "Salsa Bufalo", unit: "LT" },
-            { cat: "ABARROTES", name: "Chiles chipotles adobados", unit: "KG" },
-            { cat: "ABARROTES", name: "Botanera", unit: "LT" },
-            { cat: "ABARROTES", name: "Harina de Trigo", unit: "KG" },
-            { cat: "ABARROTES", name: "Mayonesa", unit: "KG" },
-            { cat: "ABARROTES", name: "Miel", unit: "LT" },
-            { cat: "ABARROTES", name: "Red Hot Original", unit: "LT" },
-            { cat: "ABARROTES", name: "Rodajas de chiles jalapeños", unit: "KG" },
-            { cat: "ABARROTES", name: "Catsup", unit: "LT" },
-            { cat: "ABARROTES", name: "Sal", unit: "KG" },
-            { cat: "ABARROTES", name: "Crema de coco", unit: "LT" },
-            { cat: "ABARROTES", name: "Valentina negra", unit: "LT" },
-            { cat: "ABARROTES", name: "Concentrado de Fresa", unit: "LT" },
-            { cat: "ABARROTES", name: "Concentrado de Mango", unit: "LT" },
-            // LÁCTEOS
-            { cat: "LÁCTEOS", name: "Queso Parmesano", unit: "KG" },
-            { cat: "LÁCTEOS", name: "Aderezo para nachos", unit: "LT" },
-            { cat: "LÁCTEOS", name: "Aderezo Ranchs", unit: "LT" },
-            { cat: "LÁCTEOS", name: "Queso amarillo rebanado", unit: "CAJA 100 PZAS" },
-            { cat: "LÁCTEOS", name: "Mantequilla", unit: "KG" },
-            { cat: "LÁCTEOS", name: "Quesillo", unit: "KG" },
-            { cat: "LÁCTEOS", name: "Mix Quesos", unit: "KG" },
-            { cat: "LÁCTEOS", name: "Crema acida", unit: "LT" },
-            { cat: "LÁCTEOS", name: "Leche", unit: "LT" },
-            // CONGELADOS
-            { cat: "CONGELADOS", name: "Dedos de Queso", unit: "Bolsa" },
-            { cat: "CONGELADOS", name: "Aros de Cebolla", unit: "Bolsa" },
-            { cat: "CONGELADOS", name: "Papa Recta", unit: "Bolsa" },
-            { cat: "CONGELADOS", name: "Jalapeño poppers", unit: "Bolsa" },
-            { cat: "CONGELADOS", name: "Papa Balon", unit: "Bolsa" },
-            { cat: "CONGELADOS", name: "Papa gajo", unit: "Bolsa" },
-            // PRODUCCIÓN (SALSAS Y PREPARADOS)
-            { cat: "PRODUCCIÓN", name: "Carne hamburguesa 200 gr", unit: "PZA" },
-            { cat: "PRODUCCIÓN", name: "Carne hamburguesa 40gr", unit: "PZ" },
-            { cat: "PRODUCCIÓN", name: "Carne hamburguesa 100 gr", unit: "PZ" },
-            { cat: "PRODUCCIÓN", name: "Carne hamburguesa Smash", unit: "PZA" },
-            { cat: "PRODUCCIÓN", name: "Tender", unit: "PZA" },
-            { cat: "PRODUCCIÓN", name: "CHILLIS", unit: "KG" },
-            { cat: "PRODUCCIÓN", name: "Bolita de Queso", unit: "Porcion" },
-            { cat: "PRODUCCIÓN", name: "Boneless", unit: "KG" },
-            { cat: "PRODUCCIÓN", name: "Pomodoro", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Ajo Parmesano", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "BBQ Original", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "BBQ & Jack", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "BBQ Chipotle", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Buffalo", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Curry Coconut", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Devils Cajun", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Honey Mustard", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Honey Garlic", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Blue Chesse Habanero", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Hells Habanero", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Flamin", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Extra Hot", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Mc Hot", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Mango Habanero", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Mango chipotle", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Strawberry chipotle", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Tamarindo chipotle", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Aderezo nachos preparado", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Frijol Preparado", unit: "LT" },
-            { cat: "PRODUCCIÓN", name: "Blue chesse preparado", unit: "LT" },
-            // PLÁSTICOS Y DESECHABLES
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Polipapel", unit: "PAQ 50 PZ" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Vaso 2 ch", unit: "PAQ 50 PZ" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Tapa vaso 2 ch", unit: "PAQ 50 PZ" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Bolsa Papel", unit: "KG" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Domo 9x9", unit: "PAQ 25 PZ" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Domo Hamburguesero", unit: "PAQ 25 PZ" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Caja para Pizza", unit: "paq 10 pzas" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Plástico Film", unit: "Rollo" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Papel Aluminio", unit: "Rollo" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Caja de Palillos", unit: "CAJA" },
-            { cat: "PLÁSTICOS Y DESECHABLES", name: "Papel Cuadro", unit: "paq 100 pzas" },
-            // POSTRES
-            { cat: "POSTRES", name: "PASTEL CHOCOLATE", unit: "PZAS" },
-            { cat: "POSTRES", name: "CHEESECAKE", unit: "PZAS" }
+        // Master Dataset (Exact Original Order 1-135)
+        const masterInventory = [
+            { id: 1, cat: "CÁRNICOS", name: "Alita marinada", unit: "KG" },
+            { id: 2, cat: "CÁRNICOS", name: "Pechuga s/hueso", unit: "KG" },
+            { id: 3, cat: "CÁRNICOS", name: "Molida Mixta", unit: "KG" },
+            { id: 4, cat: "CÁRNICOS", name: "Tocino", unit: "PAQ" },
+            { id: 5, cat: "CÁRNICOS", name: "Jamon", unit: "KG" },
+            { id: 6, cat: "CÁRNICOS", name: "Salchicha Jumbo", unit: "PAQ" },
+            { id: 7, cat: "CÁRNICOS", name: "Peperoni", unit: "KG" },
+            { id: 8, cat: "FRUTAS Y VERDURAS", name: "Jitomate bola", unit: "KG" },
+            { id: 9, cat: "FRUTAS Y VERDURAS", name: "Jitomate huaje", unit: "KG" },
+            { id: 10, cat: "FRUTAS Y VERDURAS", name: "Perejil", unit: "Manojo" },
+            { id: 11, cat: "FRUTAS Y VERDURAS", name: "Cebolla blanca", unit: "KG" },
+            { id: 12, cat: "FRUTAS Y VERDURAS", name: "Cebolla morada", unit: "KG" },
+            { id: 13, cat: "FRUTAS Y VERDURAS", name: "Chile habanero", unit: "KG" },
+            { id: 14, cat: "FRUTAS Y VERDURAS", name: "Zanahoria", unit: "KG" },
+            { id: 15, cat: "FRUTAS Y VERDURAS", name: "Pepino", unit: "KG" },
+            { id: 16, cat: "FRUTAS Y VERDURAS", name: "Jicama", unit: "KG" },
+            { id: 17, cat: "FRUTAS Y VERDURAS", name: "Lechuga italiana", unit: "PZA" },
+            { id: 18, cat: "FRUTAS Y VERDURAS", name: "Lechuga Romana", unit: "PZA" },
+            { id: 19, cat: "FRUTAS Y VERDURAS", name: "Ajo", unit: "KG" },
+            { id: 20, cat: "FRUTAS Y VERDURAS", name: "Chile guajillo", unit: "KG" },
+            { id: 21, cat: "FRUTAS Y VERDURAS", name: "Chile pasilla", unit: "KG" },
+            { id: 22, cat: "FRUTAS Y VERDURAS", name: "Chile cascabel", unit: "KG" },
+            { id: 23, cat: "FRUTAS Y VERDURAS", name: "Ajo en Polvo", unit: "KG" },
+            { id: 24, cat: "FRUTAS Y VERDURAS", name: "Cebolla en Polvo", unit: "KG" },
+            { id: 25, cat: "FRUTAS Y VERDURAS", name: "Col Verde", unit: "Pza" },
+            { id: 26, cat: "FRUTAS Y VERDURAS", name: "Col Morada", unit: "Pza" },
+            { id: 27, cat: "FRUTAS Y VERDURAS", name: "Chiltepin", unit: "KG" },
+            { id: 28, cat: "FRUTAS Y VERDURAS", name: "Chile de árbol", unit: "KG" },
+            { id: 29, cat: "FRUTAS Y VERDURAS", name: "Aguacate", unit: "KG" },
+            { id: 30, cat: "FRUTAS Y VERDURAS", name: "Frijol negro", unit: "KG" },
+            { id: 31, cat: "FRUTAS Y VERDURAS", name: "Cacahuate", unit: "KG" },
+            { id: 32, cat: "FRUTAS Y VERDURAS", name: "Chile Jalapeño", unit: "KG" },
+            { id: 33, cat: "FRUTAS Y VERDURAS", name: "Laurel", unit: "KG" },
+            { id: 34, cat: "FRUTAS Y VERDURAS", name: "Cilantro", unit: "KG" },
+            { id: 35, cat: "PAN", name: "Pan Brioche", unit: "PAQ" },
+            { id: 36, cat: "PAN", name: "Pan Minix", unit: "PAQ" },
+            { id: 37, cat: "PAN", name: "Pan Slaider", unit: "PAQ" },
+            { id: 38, cat: "PAN", name: "Pan Hot Dog", unit: "PAQ" },
+            { id: 39, cat: "PAN", name: "Base Pizza", unit: "PZA" },
+            { id: 40, cat: "ABARROTES", name: "Paprika español", unit: "KG" },
+            { id: 41, cat: "ABARROTES", name: "Salsa Cotadina", unit: "BOTE" },
+            { id: 42, cat: "ABARROTES", name: "Pan molido", unit: "KG" },
+            { id: 43, cat: "ABARROTES", name: "Salsa de tomate", unit: "BOTE" },
+            { id: 44, cat: "ABARROTES", name: "Pimienta negra", unit: "BOTE" },
+            { id: 45, cat: "ABARROTES", name: "Huevo blanco", unit: "KG" },
+            { id: 46, cat: "ABARROTES", name: "Piña en almibar", unit: "LATA" },
+            { id: 47, cat: "ABARROTES", name: "Lemon pepper", unit: "BOTE" },
+            { id: 48, cat: "LÁCTEOS", name: "Queso Parmesano", unit: "KG" },
+            { id: 49, cat: "LÁCTEOS", name: "Aderezo para nachos", unit: "LT" },
+            { id: 50, cat: "LÁCTEOS", name: "Aderezo Ranchs", unit: "LT" },
+            { id: 51, cat: "LÁCTEOS", name: "Queso amarillo rebanado", unit: "CAJA 100 PZAS" },
+            { id: 52, cat: "LÁCTEOS", name: "Mantequilla", unit: "KG" },
+            { id: 53, cat: "LÁCTEOS", name: "Quesillo", unit: "KG" },
+            { id: 54, cat: "LÁCTEOS", name: "Mix Quesos", unit: "KG" },
+            { id: 55, cat: "LÁCTEOS", name: "Crema acida", unit: "LT" },
+            { id: 56, cat: "LÁCTEOS", name: "Leche", unit: "LT" },
+            { id: 57, cat: "CONGELADOS", name: "Dedos de Queso", unit: "Bolsa" },
+            { id: 58, cat: "CONGELADOS", name: "Aros de Cebolla", unit: "Bolsa" },
+            { id: 59, cat: "CONGELADOS", name: "Papa Recta", unit: "Bolsa" },
+            { id: 60, cat: "CONGELADOS", name: "Jalapeño poppers", unit: "Bolsa" },
+            { id: 61, cat: "CONGELADOS", name: "Papa Balon", unit: "Bolsa" },
+            { id: 62, cat: "CONGELADOS", name: "Papa gajo", unit: "Bolsa" },
+            { id: 63, cat: "ABARROTES", name: "Concentrado de Tamarindo", unit: "LT" },
+            { id: 64, cat: "ABARROTES", name: "Elote en Lata", unit: "BOTE" },
+            { id: 65, cat: "ABARROTES", name: "Maicena", unit: "KG" },
+            { id: 66, cat: "ABARROTES", name: "Azucar estandar", unit: "KG" },
+            { id: 67, cat: "ABARROTES", name: "Mostaza", unit: "BOTE 3.8Lt" },
+            { id: 68, cat: "ABARROTES", name: "Condimix (consomé)", unit: "BOTE 3.6Kg" },
+            { id: 69, cat: "ABARROTES", name: "Pepinillos", unit: "BOTE" },
+            { id: 70, cat: "ABARROTES", name: "Valentina Amarilla Grande", unit: "LT" },
+            { id: 71, cat: "ABARROTES", name: "Salsa BBQ", unit: "LT" },
+            { id: 72, cat: "ABARROTES", name: "Salsa Inglesa", unit: "LT" },
+            { id: 73, cat: "ABARROTES", name: "Jugo Maggi", unit: "LT" },
+            { id: 74, cat: "ABARROTES", name: "Tajin", unit: "BOTE 900 G" },
+            { id: 75, cat: "ABARROTES", name: "Aceite Vegetal", unit: "LT" },
+            { id: 76, cat: "ABARROTES", name: "Aceite para freir", unit: "BIDON 20Lt" },
+            { id: 77, cat: "ABARROTES", name: "Aceite de olivo", unit: "LT" },
+            { id: 78, cat: "ABARROTES", name: "Sal con ajo", unit: "KG" },
+            { id: 79, cat: "ABARROTES", name: "Salsa Bufalo", unit: "LT" },
+            { id: 80, cat: "ABARROTES", name: "Chiles chipotles adobados", unit: "KG" },
+            { id: 81, cat: "ABARROTES", name: "Botanera", unit: "LT" },
+            { id: 82, cat: "ABARROTES", name: "Harina de Trigo", unit: "KG" },
+            { id: 83, cat: "ABARROTES", name: "Mayonesa", unit: "KG" },
+            { id: 84, cat: "ABARROTES", name: "Miel", unit: "LT" },
+            { id: 85, cat: "ABARROTES", name: "Red Hot Original", unit: "LT" },
+            { id: 86, cat: "ABARROTES", name: "Rodajas de chiles jalapeños", unit: "KG" },
+            { id: 87, cat: "ABARROTES", name: "Catsup", unit: "LT" },
+            { id: 88, cat: "ABARROTES", name: "Sal", unit: "KG" },
+            { id: 89, cat: "ABARROTES", name: "Crema de coco", unit: "LT" },
+            { id: 90, cat: "ABARROTES", name: "Valentina negra", unit: "LT" },
+            { id: 91, cat: "ABARROTES", name: "Concentrado de Fresa", unit: "LT" },
+            { id: 92, cat: "ABARROTES", name: "Concentrado de Mango", unit: "LT" },
+            { id: 93, cat: "PRODUCCIÓN", name: "Carne hamburguesa 200 gr", unit: "PZA" },
+            { id: 94, cat: "PRODUCCIÓN", name: "Carne hamburguesa 40gr", unit: "PZ" },
+            { id: 95, cat: "PRODUCCIÓN", name: "Carne hamburguesa 100 gr", unit: "PZ" },
+            { id: 96, cat: "PRODUCCIÓN", name: "Carne hamburguesa Smash", unit: "PZA" },
+            { id: 97, cat: "PRODUCCIÓN", name: "Tender", unit: "PZA" },
+            { id: 98, cat: "PRODUCCIÓN", name: "CHILLIS", unit: "KG" },
+            { id: 99, cat: "PRODUCCIÓN", name: "Bolita de Queso", unit: "Porcion" },
+            { id: 100, cat: "PRODUCCIÓN", name: "Boneless", unit: "KG" },
+            { id: 101, cat: "PRODUCCIÓN", name: "Pomodoro", unit: "LT" },
+            { id: 102, cat: "PRODUCCIÓN", name: "Ajo Parmesano", unit: "LT" },
+            { id: 103, cat: "PRODUCCIÓN", name: "BBQ Original", unit: "LT" },
+            { id: 104, cat: "PRODUCCIÓN", name: "BBQ & Jack", unit: "LT" },
+            { id: 105, cat: "PRODUCCIÓN", name: "BBQ Chipotle", unit: "LT" },
+            { id: 106, cat: "PRODUCCIÓN", name: "Buffalo", unit: "LT" },
+            { id: 107, cat: "PRODUCCIÓN", name: "Curry Coconut", unit: "LT" },
+            { id: 108, cat: "PRODUCCIÓN", name: "Devils Cajun", unit: "LT" },
+            { id: 109, cat: "PRODUCCIÓN", name: "Honey Mustard", unit: "LT" },
+            { id: 110, cat: "PRODUCCIÓN", name: "Honey Garlic", unit: "LT" },
+            { id: 111, cat: "PRODUCCIÓN", name: "Blue Chesse Habanero", unit: "LT" },
+            { id: 112, cat: "PRODUCCIÓN", name: "Hells Habanero", unit: "LT" },
+            { id: 113, cat: "PRODUCCIÓN", name: "Flamin", unit: "LT" },
+            { id: 114, cat: "PRODUCCIÓN", name: "Extra Hot", unit: "LT" },
+            { id: 115, cat: "PRODUCCIÓN", name: "Mc Hot", unit: "LT" },
+            { id: 116, cat: "PRODUCCIÓN", name: "Mango Habanero", unit: "LT" },
+            { id: 117, cat: "PRODUCCIÓN", name: "Mango chipotle", unit: "LT" },
+            { id: 118, cat: "PRODUCCIÓN", name: "Strawberry chipotle", unit: "LT" },
+            { id: 119, cat: "PRODUCCIÓN", name: "Tamarindo chipotle", unit: "LT" },
+            { id: 120, cat: "PRODUCCIÓN", name: "Aderezo nachos preparado", unit: "LT" },
+            { id: 121, cat: "PRODUCCIÓN", name: "Frijol Preparado", unit: "LT" },
+            { id: 122, cat: "PRODUCCIÓN", name: "Blue chesse preparado", unit: "LT" },
+            { id: 123, cat: "PLÁSTICOS Y DESECHABLES", name: "Polipapel", unit: "PAQ 50 PZ" },
+            { id: 124, cat: "PLÁSTICOS Y DESECHABLES", name: "Vaso 2 ch", unit: "PAQ 50 PZ" },
+            { id: 125, cat: "PLÁSTICOS Y DESECHABLES", name: "Tapa vaso 2 ch", unit: "PAQ 50 PZ" },
+            { id: 126, cat: "PLÁSTICOS Y DESECHABLES", name: "Bolsa Papel", unit: "KG" },
+            { id: 127, cat: "PLÁSTICOS Y DESECHABLES", name: "Domo 9x9", unit: "PAQ 25 PZ" },
+            { id: 128, cat: "PLÁSTICOS Y DESECHABLES", name: "Domo Hamburguesero", unit: "PAQ 25 PZ" },
+            { id: 129, cat: "PLÁSTICOS Y DESECHABLES", name: "Caja para Pizza", unit: "paq 10 pzas" },
+            { id: 130, cat: "PLÁSTICOS Y DESECHABLES", name: "Plástico Film", unit: "Rollo" },
+            { id: 131, cat: "PLÁSTICOS Y DESECHABLES", name: "Papel Aluminio", unit: "Rollo" },
+            { id: 132, cat: "PLÁSTICOS Y DESECHABLES", name: "Caja de Palillos", unit: "CAJA" },
+            { id: 133, cat: "PLÁSTICOS Y DESECHABLES", name: "Papel Cuadro", unit: "paq 100 pzas" },
+            { id: 134, cat: "POSTRES", name: "PASTEL CHOCOLATE", unit: "PZAS" },
+            { id: 135, cat: "POSTRES", name: "CHEESECAKE", unit: "PZAS" }
         ];
 
         // State Management
@@ -490,8 +655,13 @@
         let isRecording = false;
         let isTTSEnabled = true;
         let recognition = null;
+        let availableVoices = [];
 
-        // Elements
+        // Chart instances
+        let chartProgressInst = null;
+        let chartCatInst = null;
+
+        // UI Elements
         const cardCategory = document.getElementById('card-category');
         const cardTitle = document.getElementById('card-title');
         const cardUnit = document.getElementById('card-unit');
@@ -506,23 +676,41 @@
         const tbody = document.getElementById('inventory-tbody');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
+        const voiceSelect = document.getElementById('voice-select');
+        const rateRange = document.getElementById('rate-range');
 
-        // Initialize App
+        // Init App
         function init() {
-            // Load from LocalStorage or initialize
-            const savedData = localStorage.getItem('mccarthys_inventory_data');
-            if (savedData) {
-                inventory = JSON.parse(savedData);
+            const saved = localStorage.getItem('mccarthys_v2_data');
+            if (saved) {
+                const savedMap = JSON.parse(saved);
+                inventory = masterInventory.map(item => ({
+                    ...item,
+                    val: savedMap[item.id] !== undefined ? savedMap[item.id] : ""
+                }));
             } else {
-                inventory = rawInventory.map(item => ({ ...item, val: "" }));
+                inventory = masterInventory.map(item => ({ ...item, val: "" }));
             }
 
             renderTable();
             updateCard();
+            setupSpeechSynthesis();
             setupSpeechRecognition();
         }
 
-        // Render Focus Card
+        // Tab Switching
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+
+            if (tabId === 'tab-metricas') {
+                updateMetricsAndCharts();
+            }
+        }
+
+        // Card & Progress Updates
         function updateCard() {
             if (currentIndex < 0) currentIndex = 0;
             if (currentIndex >= inventory.length) currentIndex = inventory.length - 1;
@@ -533,18 +721,8 @@
             cardUnit.innerText = `PRESENTACIÓN: ${item.unit}`;
             cardInput.value = item.val;
 
-            // Highlight active row in table
-            document.querySelectorAll('#inventory-tbody tr').forEach((tr, i) => {
-                tr.classList.toggle('active-row', i === currentIndex);
-            });
-
-            // Auto scroll table to active row
-            const activeTr = document.querySelector('#inventory-tbody tr.active-row');
-            if (activeTr) activeTr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
             updateProgress();
 
-            // Speak name if TTS enabled
             if (isTTSEnabled) {
                 speakText(item.name);
             }
@@ -559,43 +737,49 @@
             progressText.innerText = `${filledCount} / ${total} insumos (${pct}%)`;
         }
 
-        // Render Table
+        function saveLocal() {
+            const saveMap = {};
+            inventory.forEach(i => saveMap[i.id] = i.val);
+            localStorage.setItem('mccarthys_v2_data', JSON.stringify(saveMap));
+        }
+
+        // Render Table (Strict Original Order)
         function renderTable() {
             tbody.innerHTML = '';
-            inventory.forEach((item, index) => {
+
+            inventory.forEach((item, idx) => {
                 const tr = document.createElement('tr');
+                if (idx === currentIndex) tr.classList.add('active-row');
+
                 tr.onclick = () => {
-                    currentIndex = index;
+                    currentIndex = idx;
+                    switchTab('tab-captura', document.querySelectorAll('.tab-btn')[0]);
                     updateCard();
                 };
 
                 tr.innerHTML = `
-                    <td style="color: var(--text-muted);">${index + 1}</td>
-                    <td style="font-size:0.8rem; color:var(--accent-gold);">${item.cat}</td>
+                    <td style="color: var(--text-muted); font-weight:bold;">#${item.id}</td>
+                    <td style="font-size:0.75rem; color:var(--accent-gold);">${item.cat}</td>
                     <td style="font-weight:600;">${item.name}</td>
-                    <td style="font-size:0.8rem; color:var(--text-muted);">${item.unit}</td>
+                    <td style="font-size:0.75rem; color:var(--text-muted);">${item.unit}</td>
                     <td>
                         <input type="number" step="any" value="${item.val}" 
-                               onchange="updateItemValue(${index}, this.value)" onclick="event.stopPropagation()">
+                               onchange="updateItemById(${item.id}, this.value)" onclick="event.stopPropagation()">
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function updateItemValue(index, val) {
-            inventory[index].val = val;
+        function updateItemById(id, val) {
+            const item = inventory.find(i => i.id === id);
+            if (item) item.val = val;
             saveLocal();
             updateProgress();
         }
 
-        function saveLocal() {
-            localStorage.setItem('mccarthys_inventory_data', JSON.stringify(inventory));
-        }
-
         // Navigation
         function nextItem() {
-            // Save current input
             inventory[currentIndex].val = cardInput.value;
             saveLocal();
             renderTable();
@@ -604,7 +788,7 @@
                 currentIndex++;
                 updateCard();
             } else {
-                speakText("Has llegado al final de la lista. Inventario completado.");
+                speakText("Inventario completado.");
                 voiceStatus.innerText = "🎉 ¡Inventario completado!";
             }
         }
@@ -616,23 +800,51 @@
             }
         }
 
-        // Speech Synthesis (Text to Speech)
+        // Text to Speech Setup
+        function setupSpeechSynthesis() {
+            if (!('speechSynthesis' in window)) return;
+
+            function loadVoices() {
+                availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang.includes('es'));
+                voiceSelect.innerHTML = '';
+                
+                availableVoices.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    if (voice.default || voice.name.includes('Mexico') || voice.name.includes('Paulina')) {
+                        option.selected = true;
+                    }
+                    voiceSelect.appendChild(option);
+                });
+            }
+
+            loadVoices();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = loadVoices;
+            }
+        }
+
         function speakText(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Stop current speech
+            if ('speechSynthesis' in window && isTTSEnabled) {
+                window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
+                
+                if (availableVoices.length > 0 && voiceSelect.value !== "") {
+                    utterance.voice = availableVoices[voiceSelect.value];
+                }
+                utterance.rate = parseFloat(rateRange.value) || 1.0;
                 utterance.lang = 'es-MX';
-                utterance.rate = 1.0;
                 window.speechSynthesis.speak(utterance);
             }
         }
 
-        // Speech Recognition Setup
+        // Speech Recognition
         function setupSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
             if (!SpeechRecognition) {
-                voiceStatus.innerText = "❌ Tu navegador no soporta Reconocimiento de Voz. Usa Chrome o Safari.";
+                voiceStatus.innerText = "❌ Navegador no compatible con voz. Usa Safari o Chrome.";
                 btnToggleVoice.disabled = true;
                 return;
             }
@@ -644,28 +856,20 @@
 
             recognition.onstart = () => {
                 isRecording = true;
-                voiceStatus.innerText = "🎙️ Escuchando... Di un número o comando ('Pasa', 'Atrás').";
+                voiceStatus.innerText = "🎙️ Escuchando... Di un número o comando.";
                 voiceStatus.classList.add('listening');
                 btnToggleVoice.classList.add('recording');
-                btnToggleVoice.innerText = "🛑 Detener Dictado por Voz";
+                btnToggleVoice.innerText = "🛑 Detener Dictado";
             };
 
             recognition.onend = () => {
                 if (isRecording) {
-                    // Auto-restart if user didn't manually stop it
                     recognition.start();
                 } else {
-                    voiceStatus.innerText = "Presiona el botón para iniciar el dictado por voz.";
+                    voiceStatus.innerText = "Presiona para iniciar el dictado por voz.";
                     voiceStatus.classList.remove('listening');
                     btnToggleVoice.classList.remove('recording');
                     btnToggleVoice.innerText = "🎙️ Activar Dictado por Voz";
-                }
-            };
-
-            recognition.onerror = (event) => {
-                console.error("Speech Error:", event.error);
-                if (event.error === 'not-allowed') {
-                    voiceStatus.innerText = "⚠️ Permiso de micrófono denegado. Permítelo en tu navegador.";
                 }
             };
 
@@ -678,15 +882,13 @@
             };
         }
 
-        // Voice Command Interpreter
         function processVoiceCommand(text) {
-            // Check for Navigation Commands
-            if (text.includes('pasa') || text.includes('siguiente') || text.includes('después') || text.includes('despues') || text.includes('saltar') || text.includes('omitir')) {
+            if (text.includes('pasa') || text.includes('siguiente') || text.includes('después') || text.includes('despues') || text.includes('saltar')) {
                 nextItem();
                 return;
             }
 
-            if (text.includes('atrás') || text.includes('atras') || text.includes('anterior') || text.includes('corregir') || text.includes('regresar')) {
+            if (text.includes('atrás') || text.includes('atras') || text.includes('anterior') || text.includes('corregir')) {
                 prevItem();
                 return;
             }
@@ -696,7 +898,6 @@
                 return;
             }
 
-            // Check for Numbers
             const parsedNum = parseSpanishNumber(text);
             if (parsedNum !== null && !isNaN(parsedNum)) {
                 cardInput.value = parsedNum;
@@ -706,44 +907,138 @@
             }
         }
 
-        // Helper to convert word numbers in Spanish
         function parseSpanishNumber(str) {
-            // Replace comma with dot
             str = str.replace(',', '.');
-            
-            // Try extracting numeric digits first (e.g. "5", "10.5")
             const match = str.match(/\d+(\.\d+)?/);
             if (match) return parseFloat(match[0]);
 
-            // Dictionary for Spanish word numbers
             const numWords = {
                 'cero': 0, 'medio': 0.5, 'un': 1, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4,
                 'cinco': 5, 'seis': 6, 'siete': 7, 'ocho': 8, 'nueve': 9, 'diez': 10,
                 'once': 11, 'doce': 12, 'trece': 13, 'catorce': 14, 'quince': 15,
-                'dieciseis': 16, 'diecisiete': 17, 'dieciocho': 18, 'diecinueve': 19,
                 'veinte': 20, 'treinta': 30, 'cuarenta': 40, 'cincuenta': 50
             };
 
             for (let word in numWords) {
                 if (str.includes(word)) return numWords[word];
             }
-
             return null;
         }
 
         function playBeepSound() {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.frequency.value = 800; // Pitch
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.15); // Duration
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 850;
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.12);
+            } catch(e){}
         }
 
-        // Event Listeners
+        // Metrics Dashboard
+        function updateMetricsAndCharts() {
+            const total = inventory.length;
+            const filled = inventory.filter(i => i.val !== "").length;
+            const pending = total - filled;
+            const pct = Math.round((filled / total) * 100);
+
+            document.getElementById('metric-total').innerText = total;
+            document.getElementById('metric-captured').innerText = filled;
+            document.getElementById('metric-pending').innerText = pending;
+            document.getElementById('metric-pct').innerText = `${pct}%`;
+
+            // Chart 1: Donut Progress
+            const ctxProg = document.getElementById('chartProgress').getContext('2d');
+            if (chartProgressInst) chartProgressInst.destroy();
+
+            chartProgressInst = new Chart(ctxProg, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Capturados', 'Pendientes'],
+                    datasets: [{
+                        data: [filled, pending],
+                        backgroundColor: ['#10b981', '#d4af37'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#f3f4f6' } } }
+                }
+            });
+
+            // Chart 2: Categories Bar
+            const categories = [...new Set(inventory.map(i => i.cat))];
+            const catFilled = categories.map(cat => inventory.filter(i => i.cat === cat && i.val !== "").length);
+            const catTotal = categories.map(cat => inventory.filter(i => i.cat === cat).length);
+
+            const ctxCat = document.getElementById('chartCategories').getContext('2d');
+            if (chartCatInst) chartCatInst.destroy();
+
+            chartCatInst = new Chart(ctxCat, {
+                type: 'bar',
+                data: {
+                    labels: categories,
+                    datasets: [
+                        { label: 'Capturado', data: catFilled, backgroundColor: '#10b981' },
+                        { label: 'Total', data: catTotal, backgroundColor: '#263834' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { color: '#9ca3af', font: { size: 9 } } },
+                        y: { ticks: { color: '#9ca3af' } }
+                    },
+                    plugins: { legend: { labels: { color: '#f3f4f6' } } }
+                }
+            });
+        }
+
+        // Export Functions (Exact Original Order)
+        document.getElementById('btn-copy-sheets').onclick = () => {
+            let tsv = "#\tCategoría\tInsumo\tPresentación\tInventario\n";
+            inventory.forEach(i => {
+                tsv += `${i.id}\t${i.cat}\t${i.name}\t${i.unit}\t${i.val}\n`;
+            });
+
+            navigator.clipboard.writeText(tsv).then(() => {
+                alert("📋 ¡Copiado con éxito!\n\nAbre Google Sheets, toca una vez la celda A1 y presiona PEGAR.");
+            });
+        };
+
+        document.getElementById('btn-export-csv').onclick = () => {
+            let csv = "#,Categoría,Insumo,Presentación,Inventario\n";
+            inventory.forEach(i => {
+                csv += `"${i.id}","${i.cat}","${i.name}","${i.unit}","${i.val}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", `Inventario_McCarthys_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        document.getElementById('btn-clear-all').onclick = () => {
+            if (confirm("¿Estás seguro de borrar todos los conteos de la lista?")) {
+                inventory.forEach(i => i.val = "");
+                saveLocal();
+                renderTable();
+                currentIndex = 0;
+                updateCard();
+            }
+        };
+
+        // UI Listeners
         btnToggleVoice.onclick = () => {
             if (!recognition) return;
             if (isRecording) {
@@ -761,46 +1056,11 @@
 
         btnTTSToggle.onclick = () => {
             isTTSEnabled = !isTTSEnabled;
-            btnTTSToggle.innerText = `🔊 Voz Asistente: ${isTTSEnabled ? 'ON' : 'OFF'}`;
+            btnTTSToggle.innerText = `🔊 Asistente: ${isTTSEnabled ? 'ON' : 'OFF'}`;
         };
 
         cardInput.onkeydown = (e) => {
             if (e.key === 'Enter') nextItem();
-        };
-
-        // Export Actions
-        document.getElementById('btn-copy-sheets').onclick = () => {
-            let tsv = "Categoría\tInsumo\tPresentación\tInventario\n";
-            inventory.forEach(i => {
-                tsv += `${i.cat}\t${i.name}\t${i.unit}\t${i.val}\n`;
-            });
-            navigator.clipboard.writeText(tsv).then(() => {
-                alert("📋 ¡Tabla copiada al portapapeles! Ahora ve a Google Sheets y dale PEGAR.");
-            });
-        };
-
-        document.getElementById('btn-export-csv').onclick = () => {
-            let csv = "Categoría,Insumo,Presentación,Inventario\n";
-            inventory.forEach(i => {
-                csv += `"${i.cat}","${i.name}","${i.unit}","${i.val}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `Inventario_McCarthys_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
-
-        document.getElementById('btn-clear-all').onclick = () => {
-            if (confirm("¿Estás seguro de borrar todos los conteos capturados?")) {
-                inventory.forEach(i => i.val = "");
-                saveLocal();
-                renderTable();
-                currentIndex = 0;
-                updateCard();
-            }
         };
 
         // Start
