@@ -30,7 +30,7 @@
             background-color: var(--bg-dark);
             color: var(--text-light);
             padding: 12px;
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             padding-bottom: 90px;
         }
@@ -44,7 +44,7 @@
 
         header h1 {
             color: var(--accent-gold);
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -70,8 +70,8 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            padding: 10px 5px;
-            font-size: 0.85rem;
+            padding: 12px 5px;
+            font-size: 0.9rem;
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
@@ -91,6 +91,56 @@
             display: block;
         }
 
+        /* Mode Switcher Banner */
+        .mode-banner {
+            background-color: var(--card-bg);
+            border: 1.5px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mode-banner label {
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mode-toggle-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            color: var(--text-muted);
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn.active-conteo {
+            background-color: var(--accent-green);
+            color: #000;
+            border-color: var(--accent-green);
+        }
+
+        .mode-btn.active-pedido {
+            background-color: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+        }
+
         /* Progress Bar */
         .progress-container {
             background-color: var(--border-color);
@@ -108,7 +158,7 @@
             transition: width 0.3s ease;
         }
 
-        /* Hero Active Card */
+        /* Active Card */
         .active-card {
             background-color: var(--card-bg);
             border: 2px solid var(--accent-green);
@@ -117,6 +167,10 @@
             text-align: center;
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             margin-bottom: 15px;
+        }
+
+        .active-card.pedido-mode {
+            border-color: var(--accent-gold);
         }
 
         .category-badge {
@@ -129,6 +183,28 @@
             display: inline-block;
             margin-bottom: 8px;
             text-transform: uppercase;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .mode-badge.conteo {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .mode-badge.pedido {
+            background-color: rgba(212, 175, 55, 0.2);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
         }
 
         .item-name {
@@ -160,10 +236,14 @@
             color: #fff;
             font-size: 2.2rem;
             text-align: center;
-            width: 130px;
+            width: 140px;
             padding: 6px;
             border-radius: 12px;
             font-weight: bold;
+        }
+
+        .active-card.pedido-mode .input-group input {
+            border-color: var(--accent-gold);
         }
 
         /* Voice Status */
@@ -268,7 +348,7 @@
         .table-section {
             background-color: var(--card-bg);
             border-radius: 12px;
-            padding: 12px;
+            padding: 14px;
             overflow-x: auto;
             border: 1px solid var(--border-color);
         }
@@ -298,28 +378,105 @@
         th {
             background-color: var(--bg-dark);
             color: var(--accent-gold);
-            padding: 8px;
+            padding: 10px 8px;
             border-bottom: 2px solid var(--accent-green);
+            white-space: nowrap;
         }
 
         td {
             padding: 8px;
             border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
         }
 
         tr.active-row {
-            background-color: rgba(16, 185, 129, 0.25);
+            background-color: rgba(16, 185, 129, 0.2);
         }
 
         td input {
             background-color: var(--bg-dark);
             border: 1px solid var(--border-color);
             color: #fff;
-            width: 65px;
-            padding: 4px;
+            width: 60px;
+            padding: 5px;
             text-align: center;
             border-radius: 6px;
             font-weight: bold;
+        }
+
+        td input.input-conteo {
+            border-color: var(--accent-green);
+        }
+
+        td input.input-pedido {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        /* Modal Resumen de Pedido */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--accent-gold);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 650px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .modal-header {
+            padding: 15px;
+            background-color: #0b1210;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+        }
+
+        .modal-body {
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            color: var(--text-light);
+            background-color: #111c19;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 12px;
+            background-color: #0b1210;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
         }
 
         /* Metrics Dashboard */
@@ -369,13 +526,32 @@
         .voice-commands-info strong {
             color: var(--accent-gold);
         }
+
+        /* Tablet Responsive Enhancements */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            .item-name {
+                font-size: 2.2rem;
+            }
+            .input-group input {
+                font-size: 2.6rem;
+                width: 170px;
+            }
+            td input {
+                width: 75px;
+                font-size: 0.95rem;
+                padding: 6px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <header>
         <h1>McCarthy's Irish Pub</h1>
-        <p>Inventario Manos Libres por Voz</p>
+        <p>Inventario por Voz</p>
     </header>
 
     <!-- Navigation Tabs -->
@@ -385,19 +561,33 @@
         <button class="tab-btn" onclick="switchTab('tab-metricas', this)">📊 Métricas</button>
     </div>
 
+    <!-- Mode Selector Banner -->
+    <div class="mode-banner">
+        <label>Modo de Entrada Activo para Voz y Teclado:</label>
+        <div class="mode-toggle-group">
+            <button class="mode-btn active-conteo" id="btn-mode-conteo" onclick="setMode('conteo')">
+                📦 Conteo Físico
+            </button>
+            <button class="mode-btn" id="btn-mode-pedido" onclick="setMode('pedido')">
+                🛒 Hacer Pedido
+            </button>
+        </div>
+    </div>
+
     <!-- TAB 1: CAPTURA POR VOZ -->
     <div id="tab-captura" class="tab-content active">
         
         <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">
-            <span>Progreso de captura</span>
-            <span id="progress-text">0 / 0 insumos (0%)</span>
+            <span id="progress-label">Progreso Conteo</span>
+            <span id="progress-text">0 / 135 insumos (0%)</span>
         </div>
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
 
         <!-- Active Focus Card -->
-        <div class="active-card">
+        <div class="active-card" id="main-active-card">
+            <div class="mode-badge conteo" id="card-mode-badge">LLENANDO: CONTEO FÍSICO</div><br>
             <div class="category-badge" id="card-category">CÁRNICOS</div>
             <div class="item-name" id="card-title">Cargando...</div>
             <div class="item-unit" id="card-unit">PRESENTACIÓN: KG</div>
@@ -421,8 +611,8 @@
 
             <div class="voice-commands-info">
                 💡 <strong>Comandos por voz:</strong><br>
-                • Di números (ej: <i>"Cinco"</i>, <i>"Dos punto cinco"</i>) para guardar y avanzar.<br>
-                • Di <i>"Pasa"</i>, <i>"Siguiente"</i> o <i>"Después"</i> para omitir.<br>
+                • Di números (ej: <i>"Cinco"</i>, <i>"Dos punto cinco"</i>) para guardar en la columna activa.<br>
+                • Di <i>"Pasa"</i>, <i>"Siguiente"</i> para omitir.<br>
                 • Di <i>"Atrás"</i> o <i>"Corregir"</i> para regresar al anterior.
             </div>
         </div>
@@ -441,18 +631,29 @@
         </div>
     </div>
 
-    <!-- TAB 2: TABLA GENERAL -->
+    <!-- TAB 2: TABLA GENERAL & PEDIDOS -->
     <div id="tab-tabla" class="tab-content">
         <div class="table-section">
             <div class="table-header">
-                <h3 style="color: var(--accent-gold); font-size: 1rem;">Lista de Inventario</h3>
+                <div>
+                    <h3 style="color: var(--accent-gold); font-size: 1rem;">Lista de Inventario & Pedidos</h3>
+                    <span id="sort-badge" style="font-size: 0.75rem; color: var(--accent-green); font-weight: bold;">
+                        Orden: Original (1 a 135)
+                    </span>
+                </div>
 
                 <div class="table-actions">
-                    <button class="btn btn-gold" id="btn-copy-sheets" style="padding: 8px 10px; font-size: 0.75rem;">
-                        📋 Copiar para Sheets
+                    <button class="btn btn-gold" id="btn-transform-sort" style="padding: 8px 10px; font-size: 0.75rem;">
+                        🔤 Transformar (A-Z Computadora)
+                    </button>
+                    <button class="btn" id="btn-show-pedidos" style="padding: 8px 10px; font-size: 0.75rem; background: var(--accent-green); color:#000;">
+                        🛒 Resumen Pedido
+                    </button>
+                    <button class="btn" id="btn-copy-sheets" style="padding: 8px 10px; font-size: 0.75rem;">
+                        📋 Copiar Sheets
                     </button>
                     <button class="btn" id="btn-export-csv" style="padding: 8px 10px; font-size: 0.75rem;">
-                        📥 Exportar CSV
+                        📥 CSV
                     </button>
                     <button class="btn" id="btn-clear-all" style="padding: 8px 10px; font-size: 0.75rem; background: var(--danger);">
                         🗑️ Limpiar
@@ -467,7 +668,8 @@
                         <th>Categoría</th>
                         <th>Insumo</th>
                         <th>Pres.</th>
-                        <th>Conteo</th>
+                        <th style="color: var(--accent-green); text-align:center;">Conteo 📦</th>
+                        <th style="color: var(--accent-gold); text-align:center;">Pedido 🛒</th>
                     </tr>
                 </thead>
                 <tbody id="inventory-tbody">
@@ -481,31 +683,48 @@
     <div id="tab-metricas" class="tab-content">
         <div class="metrics-grid">
             <div class="metric-card">
-                <h3 id="metric-total">0</h3>
+                <h3 id="metric-total">135</h3>
                 <p>Total Insumos</p>
             </div>
             <div class="metric-card">
                 <h3 id="metric-captured" style="color: var(--accent-green);">0</h3>
-                <p>Capturados</p>
+                <p>Insumos Contados</p>
             </div>
             <div class="metric-card">
-                <h3 id="metric-pending" style="color: var(--accent-gold);">0</h3>
-                <p>Pendientes</p>
+                <h3 id="metric-pedidos-count" style="color: var(--accent-gold);">0</h3>
+                <p>Insumos a Pedir</p>
             </div>
             <div class="metric-card">
                 <h3 id="metric-pct">0%</h3>
-                <p>% Completado</p>
+                <p>% Conteo Completado</p>
             </div>
         </div>
 
         <div class="chart-container">
-            <h4 style="color: var(--accent-gold); font-size: 0.9rem; margin-bottom: 10px;">Avance General</h4>
+            <h4 style="color: var(--accent-gold); font-size: 0.9rem; margin-bottom: 10px;">Avance General de Inventario</h4>
             <canvas id="chartProgress" style="max-height: 220px;"></canvas>
         </div>
 
         <div class="chart-container">
             <h4 style="color: var(--accent-gold); font-size: 0.9rem; margin-bottom: 10px;">Captura por Categorías</h4>
             <canvas id="chartCategories" style="max-height: 280px;"></canvas>
+        </div>
+    </div>
+
+    <!-- MODAL RESUMEN DE PEDIDO -->
+    <div class="modal-overlay" id="pedido-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🛒 Resumen de Pedido Solicitado</h3>
+                <button class="btn" style="padding: 4px 8px; background: transparent; color: var(--danger); font-size: 1.2rem;" onclick="closeModal()">✖</button>
+            </div>
+            <div class="modal-body" id="modal-pedido-content">
+                <!-- Se llena con JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal()">Cerrar</button>
+                <button class="btn btn-gold" id="btn-copy-pedido-text">📋 Copiar Lista para WhatsApp</button>
+            </div>
         </div>
     </div>
 
@@ -516,7 +735,7 @@
             { id: 2, cat: "CÁRNICOS", name: "Pechuga s/hueso", unit: "KG" },
             { id: 3, cat: "CÁRNICOS", name: "Molida Mixta", unit: "KG" },
             { id: 4, cat: "CÁRNICOS", name: "Tocino", unit: "PAQ" },
-            { id: 5, cat: "CÁRNICOS", name: "Jamon", unit: "KG" },
+            { id: 5, cat: "CÁRNICOS", name: "Jamón", unit: "KG" },
             { id: 6, cat: "CÁRNICOS", name: "Salchicha Jumbo", unit: "PAQ" },
             { id: 7, cat: "CÁRNICOS", name: "Peperoni", unit: "KG" },
             { id: 8, cat: "FRUTAS Y VERDURAS", name: "Jitomate bola", unit: "KG" },
@@ -651,7 +870,10 @@
 
         // State Management
         let inventory = [];
+        let viewInventory = [];
         let currentIndex = 0;
+        let activeMode = 'conteo'; // 'conteo' | 'pedido'
+        let sortMode = 'original'; // 'original' | 'alphabetical'
         let isRecording = false;
         let isTTSEnabled = true;
         let recognition = null;
@@ -661,7 +883,7 @@
         let chartProgressInst = null;
         let chartCatInst = null;
 
-        // UI Elements
+        // Elements
         const cardCategory = document.getElementById('card-category');
         const cardTitle = document.getElementById('card-title');
         const cardUnit = document.getElementById('card-unit');
@@ -676,26 +898,81 @@
         const tbody = document.getElementById('inventory-tbody');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
+        const progressLabel = document.getElementById('progress-label');
         const voiceSelect = document.getElementById('voice-select');
         const rateRange = document.getElementById('rate-range');
 
         // Init App
         function init() {
-            const saved = localStorage.getItem('mccarthys_v2_data');
+            const saved = localStorage.getItem('mccarthys_v3_data');
             if (saved) {
                 const savedMap = JSON.parse(saved);
                 inventory = masterInventory.map(item => ({
                     ...item,
-                    val: savedMap[item.id] !== undefined ? savedMap[item.id] : ""
+                    val: savedMap[item.id]?.val !== undefined ? savedMap[item.id].val : "",
+                    ped: savedMap[item.id]?.ped !== undefined ? savedMap[item.id].ped : ""
                 }));
             } else {
-                inventory = masterInventory.map(item => ({ ...item, val: "" }));
+                inventory = masterInventory.map(item => ({ ...item, val: "", ped: "" }));
             }
 
+            updateViewArray();
             renderTable();
             updateCard();
             setupSpeechSynthesis();
             setupSpeechRecognition();
+        }
+
+        // View Order Management
+        function updateViewArray() {
+            if (sortMode === 'alphabetical') {
+                viewInventory = [...inventory].sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
+                document.getElementById('sort-badge').innerText = "Orden: Alfabético A-Z (Comp. Excel)";
+                document.getElementById('btn-transform-sort').innerText = "🔢 Cambiar a Orden Original (1-135)";
+            } else {
+                viewInventory = [...inventory];
+                document.getElementById('sort-badge').innerText = "Orden: Original (1 a 135)";
+                document.getElementById('btn-transform-sort').innerText = "🔤 Transformar (A-Z Computadora)";
+            }
+        }
+
+        function toggleSortMode() {
+            sortMode = (sortMode === 'original') ? 'alphabetical' : 'original';
+            const currentItem = viewInventory[currentIndex];
+            updateViewArray();
+            if (currentItem) {
+                currentIndex = viewInventory.findIndex(i => i.id === currentItem.id);
+                if (currentIndex === -1) currentIndex = 0;
+            }
+            renderTable();
+            updateCard();
+        }
+
+        // Mode Switching (Conteo vs Pedido)
+        function setMode(mode) {
+            activeMode = mode;
+            const btnC = document.getElementById('btn-mode-conteo');
+            const btnP = document.getElementById('btn-mode-pedido');
+            const cardModeBadge = document.getElementById('card-mode-badge');
+            const mainCard = document.getElementById('main-active-card');
+
+            if (mode === 'conteo') {
+                btnC.className = 'mode-btn active-conteo';
+                btnP.className = 'mode-btn';
+                cardModeBadge.className = 'mode-badge conteo';
+                cardModeBadge.innerText = 'LLENANDO: CONTEO FÍSICO 📦';
+                mainCard.classList.remove('pedido-mode');
+                progressLabel.innerText = "Progreso Conteo";
+            } else {
+                btnP.className = 'mode-btn active-pedido';
+                btnC.className = 'mode-btn';
+                cardModeBadge.className = 'mode-badge pedido';
+                cardModeBadge.innerText = 'LLENANDO: HACER PEDIDO 🛒';
+                mainCard.classList.add('pedido-mode');
+                progressLabel.innerText = "Progreso Pedido";
+            }
+
+            updateCard();
         }
 
         // Tab Switching
@@ -713,13 +990,14 @@
         // Card & Progress Updates
         function updateCard() {
             if (currentIndex < 0) currentIndex = 0;
-            if (currentIndex >= inventory.length) currentIndex = inventory.length - 1;
+            if (currentIndex >= viewInventory.length) currentIndex = viewInventory.length - 1;
 
-            const item = inventory[currentIndex];
+            const item = viewInventory[currentIndex];
             cardCategory.innerText = item.cat;
             cardTitle.innerText = item.name;
             cardUnit.innerText = `PRESENTACIÓN: ${item.unit}`;
-            cardInput.value = item.val;
+            
+            cardInput.value = (activeMode === 'conteo') ? item.val : item.ped;
 
             updateProgress();
 
@@ -729,7 +1007,7 @@
         }
 
         function updateProgress() {
-            const filledCount = inventory.filter(i => i.val !== "").length;
+            const filledCount = inventory.filter(i => (activeMode === 'conteo' ? i.val !== "" : i.ped !== "")).length;
             const total = inventory.length;
             const pct = Math.round((filledCount / total) * 100);
 
@@ -739,15 +1017,15 @@
 
         function saveLocal() {
             const saveMap = {};
-            inventory.forEach(i => saveMap[i.id] = i.val);
-            localStorage.setItem('mccarthys_v2_data', JSON.stringify(saveMap));
+            inventory.forEach(i => saveMap[i.id] = { val: i.val, ped: i.ped });
+            localStorage.setItem('mccarthys_v3_data', JSON.stringify(saveMap));
         }
 
-        // Render Table (Strict Original Order)
+        // Render Table
         function renderTable() {
             tbody.innerHTML = '';
 
-            inventory.forEach((item, idx) => {
+            viewInventory.forEach((item, idx) => {
                 const tr = document.createElement('tr');
                 if (idx === currentIndex) tr.classList.add('active-row');
 
@@ -762,34 +1040,46 @@
                     <td style="font-size:0.75rem; color:var(--accent-gold);">${item.cat}</td>
                     <td style="font-weight:600;">${item.name}</td>
                     <td style="font-size:0.75rem; color:var(--text-muted);">${item.unit}</td>
-                    <td>
-                        <input type="number" step="any" value="${item.val}" 
-                               onchange="updateItemById(${item.id}, this.value)" onclick="event.stopPropagation()">
+                    <td style="text-align:center;">
+                        <input type="number" step="any" class="input-conteo" value="${item.val}" 
+                               onchange="updateFieldValue(${item.id}, 'val', this.value)" onclick="event.stopPropagation()">
+                    </td>
+                    <td style="text-align:center;">
+                        <input type="number" step="any" class="input-pedido" value="${item.ped}" 
+                               onchange="updateFieldValue(${item.id}, 'ped', this.value)" onclick="event.stopPropagation()">
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function updateItemById(id, val) {
+        function updateFieldValue(id, field, value) {
             const item = inventory.find(i => i.id === id);
-            if (item) item.val = val;
-            saveLocal();
-            updateProgress();
+            if (item) {
+                item[field] = value;
+                saveLocal();
+                updateProgress();
+            }
         }
 
         // Navigation
         function nextItem() {
-            inventory[currentIndex].val = cardInput.value;
+            const item = viewInventory[currentIndex];
+            if (activeMode === 'conteo') {
+                item.val = cardInput.value;
+            } else {
+                item.ped = cardInput.value;
+            }
+            
             saveLocal();
             renderTable();
 
-            if (currentIndex < inventory.length - 1) {
+            if (currentIndex < viewInventory.length - 1) {
                 currentIndex++;
                 updateCard();
             } else {
-                speakText("Inventario completado.");
-                voiceStatus.innerText = "🎉 ¡Inventario completado!";
+                speakText("Lista completada.");
+                voiceStatus.innerText = "🎉 ¡Lista completada!";
             }
         }
 
@@ -800,7 +1090,7 @@
             }
         }
 
-        // Text to Speech Setup
+        // Speech Synthesis Setup
         function setupSpeechSynthesis() {
             if (!('speechSynthesis' in window)) return;
 
@@ -839,7 +1129,7 @@
             }
         }
 
-        // Speech Recognition
+        // Speech Recognition Setup
         function setupSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -894,14 +1184,18 @@
             }
 
             if (text.includes('repetir') || text.includes('otra vez')) {
-                speakText(inventory[currentIndex].name);
+                speakText(viewInventory[currentIndex].name);
                 return;
             }
 
             const parsedNum = parseSpanishNumber(text);
             if (parsedNum !== null && !isNaN(parsedNum)) {
                 cardInput.value = parsedNum;
-                inventory[currentIndex].val = parsedNum;
+                if (activeMode === 'conteo') {
+                    viewInventory[currentIndex].val = parsedNum;
+                } else {
+                    viewInventory[currentIndex].ped = parsedNum;
+                }
                 playBeepSound();
                 nextItem();
             }
@@ -939,16 +1233,65 @@
             } catch(e){}
         }
 
+        // Modal Resumen de Pedido
+        function openPedidoSummary() {
+            const pedidoItems = inventory.filter(i => i.ped !== "" && parseFloat(i.ped) > 0);
+            const contentDiv = document.getElementById('modal-pedido-content');
+
+            if (pedidoItems.length === 0) {
+                contentDiv.innerHTML = "⚠️ <i>No hay insumos registrados para pedido aún. Llena la columna 'Pedido' en la tabla o activa el modo 'Hacer Pedido'.</i>";
+            } else {
+                const categories = [...new Set(pedidoItems.map(i => i.cat))];
+                let summaryTxt = "📋 *RESUMEN DE PEDIDO - MCCARTHY'S IRISH PUB*\n";
+                summaryTxt += `📅 Fecha: ${new Date().toLocaleDateString('es-MX')}\n\n`;
+
+                let htmlContent = "";
+
+                categories.forEach(cat => {
+                    const itemsInCat = pedidoItems.filter(i => i.cat === cat);
+                    summaryTxt += `📌 *${cat}*:\n`;
+                    htmlContent += `<h4 style="color: var(--accent-gold); margin-top: 10px; margin-bottom: 5px;">📌 ${cat}</h4><ul style="padding-left:20px; margin-bottom:10px;">`;
+
+                    itemsInCat.forEach(item => {
+                        summaryTxt += `  • ${item.name}: ${item.ped} ${item.unit}\n`;
+                        htmlContent += `<li><strong>${item.name}</strong>: ${item.ped} ${item.unit}</li>`;
+                    });
+
+                    summaryTxt += "\n";
+                    htmlContent += `</ul>`;
+                });
+
+                contentDiv.innerHTML = htmlContent;
+                window.currentPedidoText = summaryTxt;
+            }
+
+            document.getElementById('pedido-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('pedido-modal').classList.remove('active');
+        }
+
+        document.getElementById('btn-copy-pedido-text').onclick = () => {
+            if (!window.currentPedidoText) {
+                alert("No hay pedido que copiar.");
+                return;
+            }
+            navigator.clipboard.writeText(window.currentPedidoText).then(() => {
+                alert("📋 ¡Lista de pedido copiada!\n\nPuedes pegarla directamente en WhatsApp o correo.");
+            });
+        };
+
         // Metrics Dashboard
         function updateMetricsAndCharts() {
             const total = inventory.length;
-            const filled = inventory.filter(i => i.val !== "").length;
-            const pending = total - filled;
-            const pct = Math.round((filled / total) * 100);
+            const filledConteo = inventory.filter(i => i.val !== "").length;
+            const filledPedidos = inventory.filter(i => i.ped !== "" && parseFloat(i.ped) > 0).length;
+            const pct = Math.round((filledConteo / total) * 100);
 
             document.getElementById('metric-total').innerText = total;
-            document.getElementById('metric-captured').innerText = filled;
-            document.getElementById('metric-pending').innerText = pending;
+            document.getElementById('metric-captured').innerText = filledConteo;
+            document.getElementById('metric-pedidos-count').innerText = filledPedidos;
             document.getElementById('metric-pct').innerText = `${pct}%`;
 
             // Chart 1: Donut Progress
@@ -958,10 +1301,10 @@
             chartProgressInst = new Chart(ctxProg, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Capturados', 'Pendientes'],
+                    labels: ['Contados', 'Pendientes'],
                     datasets: [{
-                        data: [filled, pending],
-                        backgroundColor: ['#10b981', '#d4af37'],
+                        data: [filledConteo, total - filledConteo],
+                        backgroundColor: ['#10b981', '#263834'],
                         borderWidth: 0
                     }]
                 },
@@ -985,8 +1328,8 @@
                 data: {
                     labels: categories,
                     datasets: [
-                        { label: 'Capturado', data: catFilled, backgroundColor: '#10b981' },
-                        { label: 'Total', data: catTotal, backgroundColor: '#263834' }
+                        { label: 'Contado', data: catFilled, backgroundColor: '#10b981' },
+                        { label: 'Total Insumos', data: catTotal, backgroundColor: '#263834' }
                     ]
                 },
                 options: {
@@ -1001,36 +1344,36 @@
             });
         }
 
-        // Export Functions (Exact Original Order)
+        // Export Functions
         document.getElementById('btn-copy-sheets').onclick = () => {
-            let tsv = "#\tCategoría\tInsumo\tPresentación\tInventario\n";
+            let tsv = "#\tCategoría\tInsumo\tPresentación\tConteo Físico\tPedido\n";
             inventory.forEach(i => {
-                tsv += `${i.id}\t${i.cat}\t${i.name}\t${i.unit}\t${i.val}\n`;
+                tsv += `${i.id}\t${i.cat}\t${i.name}\t${i.unit}\t${i.val}\t${i.ped}\n`;
             });
 
             navigator.clipboard.writeText(tsv).then(() => {
-                alert("📋 ¡Copiado con éxito!\n\nAbre Google Sheets, toca una vez la celda A1 y presiona PEGAR.");
+                alert("📋 ¡Copiado con éxito!\n\nAbre Google Sheets, toca la celda A1 y presiona PEGAR.");
             });
         };
 
         document.getElementById('btn-export-csv').onclick = () => {
-            let csv = "#,Categoría,Insumo,Presentación,Inventario\n";
+            let csv = "#,Categoría,Insumo,Presentación,Conteo,Pedido\n";
             inventory.forEach(i => {
-                csv += `"${i.id}","${i.cat}","${i.name}","${i.unit}","${i.val}"\n`;
+                csv += `"${i.id}","${i.cat}","${i.name}","${i.unit}","${i.val}","${i.ped}"\n`;
             });
 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `Inventario_McCarthys_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute("download", `Inventario_Pedidos_McCarthys_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         };
 
         document.getElementById('btn-clear-all').onclick = () => {
-            if (confirm("¿Estás seguro de borrar todos los conteos de la lista?")) {
-                inventory.forEach(i => i.val = "");
+            if (confirm("¿Estás seguro de borrar todos los conteos y pedidos de la lista?")) {
+                inventory.forEach(i => { i.val = ""; i.ped = ""; });
                 saveLocal();
                 renderTable();
                 currentIndex = 0;
@@ -1038,7 +1381,10 @@
             }
         };
 
-        // UI Listeners
+        // Event Listeners
+        document.getElementById('btn-transform-sort').onclick = toggleSortMode;
+        document.getElementById('btn-show-pedidos').onclick = openPedidoSummary;
+
         btnToggleVoice.onclick = () => {
             if (!recognition) return;
             if (isRecording) {
@@ -1052,7 +1398,7 @@
         btnSaveStep.onclick = nextItem;
         btnSkip.onclick = nextItem;
         btnPrev.onclick = prevItem;
-        btnRepeat.onclick = () => speakText(inventory[currentIndex].name);
+        btnRepeat.onclick = () => speakText(viewInventory[currentIndex].name);
 
         btnTTSToggle.onclick = () => {
             isTTSEnabled = !isTTSEnabled;
@@ -1063,7 +1409,7 @@
             if (e.key === 'Enter') nextItem();
         };
 
-        // Start
+        // Start App
         init();
     </script>
 </body>
